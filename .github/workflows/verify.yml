@@ -1,0 +1,43 @@
+name: Verify Vexstride
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  numerical-workflow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Install the verified MoonBit SDK
+        shell: bash
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh -o "$RUNNER_TEMP/install-moon.sh"
+          bash "$RUNNER_TEMP/install-moon.sh" "$(cat .moonbit-version)"
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - name: Check, build and test the library and CLI
+        run: |
+          moon version --all
+          moon update
+          moon fmt --check
+          moon check --target wasm,wasm-gc,js --deny-warn
+          moon build --target wasm,wasm-gc,js --deny-warn
+          moon test --target wasm,wasm-gc,js --deny-warn
+          moon run verify.mbtx --deny-warn
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Compare the same input and output samples with SALib
+        run: |
+          python -m pip install SALib==1.5.2
+          moon run oracle.mbtx --deny-warn -- python
+      - name: Exercise the separate consumer module
+        run: |
+          moon -C consumer check --deny-warn
+          moon -C consumer run . --deny-warn
