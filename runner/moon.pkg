@@ -1,0 +1,27 @@
+supported_targets = "wasm"
+
+pkgtype(kind: "executable")
+
+options(
+  "allow-experimental-packages": [
+    "moonbitlang/core/async",
+    "moonbitlang/core/async/fs",
+    "moonbitlang/core/async/stdio",
+  ],
+)
+
+import {
+  "moonbitlang/core/async",
+  "Lyhdsba/vexstride/spec",
+  "Lyhdsba/vexstride/trails",
+  "Lyhdsba/vexstride/effects",
+  "Lyhdsba/vexstride/exchange",
+  "Lyhdsba/vexstride/fieldnotes",
+  "Lyhdsba/vexstride/bulletin",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/stdio",
+  "moonbitlang/x/sys",
+}
