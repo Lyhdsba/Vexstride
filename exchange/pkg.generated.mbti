@@ -1,0 +1,31 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Lyhdsba/vexstride/exchange"
+
+import {
+  "Lyhdsba/vexstride/spec",
+}
+
+// Values
+pub fn inputs_csv(@spec.Plan) -> String raise @spec.Problem
+
+pub fn parse_results(String) -> Array[@spec.Observation] raise @spec.Problem
+
+pub fn plan_from_json(String) -> @spec.Plan raise @spec.Problem
+
+pub fn plan_to_json(@spec.Plan) -> String raise @spec.Problem
+
+pub fn read_csv(String) -> Array[Array[String]] raise @spec.Problem
+
+pub fn results_csv(Array[@spec.Observation]) -> String raise @spec.Problem
+
+pub fn study_from_json(String) -> @spec.Study raise @spec.Problem
+
+pub fn write_csv(Array[Array[String]]) -> String raise @spec.Problem
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
