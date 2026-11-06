@@ -1,0 +1,48 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Lyhdsba/vexstride/effects"
+
+import {
+  "Lyhdsba/vexstride/spec",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn analyze(@spec.Plan, Array[@spec.Observation], resamples? : Int32, seed? : Int32) -> Report raise @spec.Problem
+
+// Errors
+
+// Types and methods
+#derive(@debug.Debug, @json.ToJson)
+pub(all) struct Metric {
+  id : String
+  name : String
+  unit : String
+  mu : Double
+  mu_star : Double
+  sigma : Double
+  interval_low : Double
+  interval_high : Double
+  top_share : Double?
+}
+pub fn Metric::to_json(Self) -> @json.Json
+pub fn Metric::to_repr(Self) -> @debug.Repr
+
+#derive(@debug.Debug, @json.ToJson)
+pub(all) struct Report {
+  schema : String
+  plan_id : String
+  trajectories : Int32
+  evaluations : Int32
+  levels : Int32
+  resamples : Int32
+  bootstrap_seed : Int32
+  constant_output : Bool
+  metrics : Array[Metric]
+}
+pub fn Report::to_json(Self) -> @json.Json
+pub fn Report::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,7 @@
+import {
+  "Lyhdsba/vexstride/spec",
+  "Lyhdsba/vexstride/trails",
+  "Lyhdsba/vexstride/internal/draw",
+  "moonbitlang/core/json",
+  "moonbitlang/core/debug",
+}
