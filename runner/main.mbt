@@ -10,7 +10,7 @@ async fn read(path : String) -> String {
     raise @spec.Invalid("input file exceeds 16 MiB")
   }
   let bytes = file.read_exactly(size.to_int())
-  @utf8.decode(bytes)
+  @utf8.decode(bytes, ignore_bom=true)
 }
 
 ///|

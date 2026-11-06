@@ -4,6 +4,7 @@ import {
   "moonbitlang/core/async/shell",
   "moonbitlang/core/async/fs",
   "moonbitlang/core/json",
+  "moonbitlang/core/encoding/utf8",
 }
 ----
 
@@ -46,4 +47,31 @@ async fn main {
   let bad_usage = @shell.Cmd("moon", ["run", "runner", "--", "not-a-command"]).output()
   assert_eq(bad_usage.exit_code(), 64)
   assert_true(!bad_usage.stderr().contains("Users"))
+  let csv = @fs.read_text(directory + "/heat.results.csv")
+  let lines = csv.split("\r\n").to_array()
+  let partial = lines[0:lines.length() - 2].to_owned().map(s => s.to_owned()).join("\r\n") + "\r\n"
+  @fs.write_text(directory + "/partial.csv", partial)
+  let missing = @shell.Cmd("moon", ["run", "runner", "--", "missing", directory + "/heat.plan.json", directory + "/partial.csv"]).output()
+  assert_eq(missing.exit_code(), 3)
+  guard @json.parse(missing.stdout()) is Array(absent) else { fail("invalid missing output") }
+  assert_eq(absent.length(), 1)
+  let incomplete = @shell.Cmd("moon", ["run", "runner", "--", "analyze", directory + "/heat.plan.json", directory + "/partial.csv"]).output()
+  assert_eq(incomplete.exit_code(), 3)
+  assert_eq(incomplete.stdout(), "")
+  @fs.write_text(directory + "/duplicate.csv", csv + lines[1].to_owned() + "\r\n")
+  let duplicate = @shell.Cmd("moon", ["run", "runner", "--", "merge", directory + "/heat.plan.json", directory + "/duplicate.csv"]).output()
+  assert_eq(duplicate.exit_code(), 2)
+  assert_true(!duplicate.stderr().contains(directory))
+  @fs.write_binary(directory + "/bad-utf8.json", b"\xff")
+  let malformed = @shell.Cmd("moon", ["run", "runner", "--", "plan", directory + "/bad-utf8.json"]).output()
+  assert_eq(malformed.exit_code(), 74)
+  assert_true(!malformed.stderr().contains(directory))
+  let study_text = @fs.read_text(directory + "/heat.study.json")
+  @fs.write_binary(directory + "/bom.study.json", @utf8.encode(study_text, bom=true))
+  assert_eq(command(["plan", directory + "/bom.study.json"]), @fs.read_text(directory + "/heat.plan.json"))
+  @fs.write_text(directory + "/oversized.json", " ".repeat(16777217))
+  let oversized = @shell.Cmd("moon", ["run", "runner", "--", "plan", directory + "/oversized.json"]).output()
+  assert_eq(oversized.exit_code(), 2)
+  assert_true(oversized.stderr().contains("exceeds 16 MiB"))
+  println("CLI failure statuses verified: 2 invalid, 3 incomplete, 64 usage, 74 inaccessible input")
 }

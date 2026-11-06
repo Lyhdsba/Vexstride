@@ -15,7 +15,7 @@ async fn read(program : String, arguments : Array[String]) -> String {
 async fn main {
   let expected = "Lyhdsba"
   let email = "299473810+Lyhdsba@users.noreply.github.com"
-  assert_eq(read("gh", ["api", "user", "--jq", ".login"]), expected)
+  assert_eq(read("gh", ["api", "--hostname", "github.com", "user", "--jq", ".login"]), expected)
   for role in ["GIT_AUTHOR_IDENT", "GIT_COMMITTER_IDENT"] {
     let identity = read("git", ["var", role])
     assert_true(identity.has_prefix(expected + " <" + email + "> "))
@@ -39,7 +39,7 @@ async fn main {
           fail("coauthor trailers require owner review; push blocked")
         }
       }
-      let owner = read("gh", ["api", "repos/Lyhdsba/Vexstride", "--jq", ".owner.login"])
+      let owner = read("gh", ["api", "--hostname", "github.com", "repos/Lyhdsba/Vexstride", "--jq", ".owner.login"])
       assert_eq(owner, expected)
     }
     _ => fail("usage: identity.mbtx commit | push <remote-url>")
