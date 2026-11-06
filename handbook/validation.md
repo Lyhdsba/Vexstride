@@ -14,6 +14,7 @@ Local verification on 2026-11-07 used moonc `0.10.20+65efd5b93`, Moon `0.1.20261
 | CLI failure cases | Exit 2 for invalid/duplicate/oversized data; 3 for missing results; 64 for usage; 74 for inaccessible files and malformed UTF-8. |
 | UTF-8 BOM | Initial test found rejection; explicit BOM stripping fixed it and the resulting plan matches the BOM-free input. |
 | Separate source consumer | Public facade used successfully from a separate module; price/quantity model result exchange and screening passed. |
+| Committed-source export | Exported the Git tree into a fresh directory without working-tree artifacts; strict three-target check/build/test, all CLI workflows, SALib comparisons and the separate consumer passed again. |
 | Standalone mathematical note | Independently checked and tested outside the module with MoonBit single-file mode, then included as executable documentation. |
 | HTML | Desktop browser inspection of the generated heat report; readable charts, table, assumptions and full-precision hover values. Metadata escaping is tested. |
 
