@@ -1,0 +1,19 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Lyhdsba/vexstride/fieldnotes"
+
+import {
+  "Lyhdsba/vexstride/spec",
+}
+
+// Values
+pub fn evaluate(String, @spec.Plan) -> Array[@spec.Observation] raise @spec.Problem
+
+pub fn study(String) -> @spec.Study raise @spec.Problem
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
