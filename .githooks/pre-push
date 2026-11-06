@@ -1,0 +1,2 @@
+#!/bin/sh
+exec moon run identity.mbtx -- push "$2"

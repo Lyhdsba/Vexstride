@@ -1,0 +1,89 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Lyhdsba/vexstride/spec"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+
+// Errors
+#derive(@debug.Debug)
+pub(all) suberror Problem {
+  Invalid(String)
+}
+pub fn Problem::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
+pub(all) struct Factor {
+  id : String
+  name : String
+  unit : String
+  lower : Double
+  upper : Double
+}
+pub fn Factor::equal(Self, Self) -> Bool
+pub fn Factor::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Factor::not_equal(Self, Self) -> Bool
+pub fn Factor::to_json(Self) -> @json.Json
+pub fn Factor::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
+pub(all) struct Observation {
+  plan_id : String
+  run_id : String
+  value : Double
+}
+pub fn Observation::equal(Self, Self) -> Bool
+pub fn Observation::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Observation::not_equal(Self, Self) -> Bool
+pub fn Observation::to_json(Self) -> @json.Json
+pub fn Observation::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
+pub(all) struct Plan {
+  schema : String
+  id : String
+  study : Study
+  runs : Array[Run]
+}
+pub fn Plan::equal(Self, Self) -> Bool
+pub fn Plan::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Plan::not_equal(Self, Self) -> Bool
+pub fn Plan::to_json(Self) -> @json.Json
+pub fn Plan::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
+pub(all) struct Run {
+  id : String
+  trajectory : Int32
+  step : Int32
+  normalized : Array[Double]
+  values : Array[Double]
+}
+pub fn Run::equal(Self, Self) -> Bool
+pub fn Run::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Run::not_equal(Self, Self) -> Bool
+pub fn Run::to_json(Self) -> @json.Json
+pub fn Run::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug, @json.FromJson, @json.ToJson)
+pub(all) struct Study {
+  factors : Array[Factor]
+  levels : Int32
+  trajectories : Int32
+  seed : Int32
+}
+pub fn Study::equal(Self, Self) -> Bool
+pub fn Study::evaluations(Self) -> Int32 raise Problem
+pub fn Study::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Study::not_equal(Self, Self) -> Bool
+pub fn Study::to_json(Self) -> @json.Json
+pub fn Study::to_repr(Self) -> @debug.Repr
+pub fn Study::validate(Self) -> Unit raise Problem
+
+// Type aliases
+
+// Traits

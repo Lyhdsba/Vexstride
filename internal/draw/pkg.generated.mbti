@@ -1,0 +1,17 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Lyhdsba/vexstride/internal/draw"
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct Generator {
+  mut state : Int64
+}
+pub fn Generator::bounded(Self, Int32) -> Int32
+pub fn Generator::new(Int32) -> Self
+
+// Type aliases
+
+// Traits

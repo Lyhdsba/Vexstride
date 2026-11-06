@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec moon run identity.mbtx -- commit

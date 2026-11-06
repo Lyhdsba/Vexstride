@@ -1,0 +1,48 @@
+----
+import {
+  "moonbitlang/core/async",
+  "moonbitlang/core/async/shell",
+  "moonbitlang/core/env",
+}
+----
+
+async fn read(program : String, arguments : Array[String]) -> String {
+  let output = @shell.Cmd(program, arguments).output()
+  if output.exit_code() != 0 { fail("identity check command failed; verify owner authentication") }
+  output.stdout().trim().to_owned()
+}
+
+async fn main {
+  let expected = "Lyhdsba"
+  let email = "299473810+Lyhdsba@users.noreply.github.com"
+  assert_eq(read("gh", ["api", "user", "--jq", ".login"]), expected)
+  for role in ["GIT_AUTHOR_IDENT", "GIT_COMMITTER_IDENT"] {
+    let identity = read("git", ["var", role])
+    assert_true(identity.has_prefix(expected + " <" + email + "> "))
+  }
+  let arguments = @env.args()[1:]
+  match arguments {
+    ["commit"] => ()
+    ["push", url] => {
+      let allowed = [
+        "https://github.com/Lyhdsba/Vexstride.git", "https://github.com/Lyhdsba/Vexstride",
+        "git@github.com:Lyhdsba/Vexstride.git",
+      ]
+      assert_true(allowed.contains(url))
+      let identities = read("git", ["log", "--format=%an|%ae|%cn|%ce"])
+      for line in identities.split("\n") {
+        assert_eq(line, "\{expected}|\{email}|\{expected}|\{email}")
+      }
+      let bodies = read("git", ["log", "--format=%B"])
+      for line in bodies.split("\n") {
+        if line.to_owned().to_lower().has_prefix("co-authored-by:") {
+          fail("coauthor trailers require owner review; push blocked")
+        }
+      }
+      let owner = read("gh", ["api", "repos/Lyhdsba/Vexstride", "--jq", ".owner.login"])
+      assert_eq(owner, expected)
+    }
+    _ => fail("usage: identity.mbtx commit | push <remote-url>")
+  }
+  println("Identity verified: Lyhdsba")
+}
