@@ -1,0 +1,57 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Lyhdsba/vexstride"
+
+import {
+  "Lyhdsba/vexstride/effects",
+  "Lyhdsba/vexstride/spec",
+}
+
+// Values
+pub fn analyze(@spec.Plan, Array[@spec.Observation], resamples? : Int32, seed? : Int32) -> @effects.Report raise @spec.Problem
+
+pub fn evaluate(@spec.Plan, (Array[Double]) -> Double) -> Array[@spec.Observation] raise @spec.Problem
+
+pub fn generate(@spec.Study) -> @spec.Plan raise @spec.Problem
+
+pub fn html(@spec.Plan, @effects.Report) -> String
+
+pub fn inputs_csv(@spec.Plan) -> String raise @spec.Problem
+
+pub fn merge(@spec.Plan, Array[Array[@spec.Observation]]) -> Array[@spec.Observation] raise @spec.Problem
+
+pub fn missing(@spec.Plan, Array[@spec.Observation]) -> Array[String] raise @spec.Problem
+
+pub fn parse_results(String) -> Array[@spec.Observation] raise @spec.Problem
+
+pub fn plan_from_json(String) -> @spec.Plan raise @spec.Problem
+
+pub fn plan_to_json(@spec.Plan) -> String raise @spec.Problem
+
+pub fn results_csv(Array[@spec.Observation]) -> String raise @spec.Problem
+
+pub fn study_from_json(String) -> @spec.Study raise @spec.Problem
+
+pub fn validate(@spec.Plan) -> Unit raise @spec.Problem
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+pub using @spec {type Factor}
+
+pub using @effects {type Metric}
+
+pub using @spec {type Observation}
+
+pub using @spec {type Plan}
+
+pub using @spec {type Problem}
+
+pub using @effects {type Report}
+
+pub using @spec {type Run}
+
+pub using @spec {type Study}
+
+// Traits
