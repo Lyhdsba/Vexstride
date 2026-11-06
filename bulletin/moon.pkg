@@ -1,0 +1,8 @@
+import {
+  "Lyhdsba/vexstride/spec",
+  "Lyhdsba/vexstride/effects",
+}
+
+import {
+  "Lyhdsba/vexstride/trails",
+} for "test"
