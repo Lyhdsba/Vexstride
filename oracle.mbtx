@@ -1,0 +1,80 @@
+----
+import {
+  "moonbitlang/core/async",
+  "moonbitlang/core/async/shell",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+  "moonbitlang/core/env",
+}
+----
+
+async fn main {
+  let arguments = @env.args()
+  guard arguments.length() == 2 else { fail("usage: moon run oracle.mbtx -- <python-with-SALib>") }
+  let python = arguments[1]
+  for name in ["heat", "stock", "spring"] {
+    let prefix = ".local-check/" + name
+    let plan = @json.parse(@fs.read_text(prefix + ".plan.json"))
+    guard plan is {
+      "runs": Array(runs),
+      "study": { "factors": Array(factors), "levels": Number(levels, ..), .. }, ..
+    } else { fail("unexpected plan structure") }
+    let matrix = StringBuilder()
+    for run in runs {
+      guard run is { "normalized": Array(values), .. } else { fail("missing normalized inputs") }
+      let cells : Array[String] = []
+      for value in values {
+        guard value is Number(x, ..) else { fail("invalid input coordinate") }
+        cells.push(x.to_string())
+      }
+      matrix.write_string(cells.join(" ") + "\n")
+    }
+    let parameters = StringBuilder()
+    for factor in factors {
+      guard factor is { "id": String(id), .. } else { fail("missing factor ID") }
+      parameters.write_string(id + " 0 1\n")
+    }
+    let outputs = StringBuilder()
+    let csv = @fs.read_text(prefix + ".results.csv")
+    for index, line in csv.split("\n").to_array() {
+      if index == 0 || line.trim().is_empty() { continue }
+      let fields = line.trim().to_owned().split(",").to_array()
+      assert_eq(fields.length(), 3)
+      outputs.write_string(fields[2].to_owned() + "\n")
+    }
+    @fs.write_text(prefix + ".X.txt", matrix.to_string())
+    @fs.write_text(prefix + ".Y.txt", outputs.to_string())
+    @fs.write_text(prefix + ".params.txt", parameters.to_string())
+    let reference = @shell.Cmd(python, [
+      "-m", "SALib.analyze.morris", "-p", prefix + ".params.txt",
+      "-X", prefix + ".X.txt", "-Y", prefix + ".Y.txt",
+      "-l", levels.to_int().to_string(), "-s", "7919", "-r", "200",
+    ]).output()
+    if reference.exit_code() != 0 { fail("SALib reference run failed") }
+    @fs.write_text(prefix + ".SALib.txt", reference.stdout())
+    let report = @json.parse(@fs.read_text(prefix + ".report.json"))
+    guard report is { "metrics": Array(metrics), .. } else { fail("missing metrics") }
+    let mut compared = 0
+    for metric in metrics {
+      guard metric is {
+        "id": String(id), "mu": Number(mu, ..), "mu_star": Number(mu_star, ..), "sigma": Number(sigma, ..), ..
+      } else { fail("invalid metric") }
+      let mut matched = false
+      for line in reference.stdout().split("\n") {
+        let cells = line.to_owned().replace_all(old="\t", new=" ").split(" ").filter(s => !s.is_empty()).to_array()
+        if cells.length() == 5 && cells[0] == id {
+          let actual = [@string.parse_double(cells[1]), @string.parse_double(cells[2]), @string.parse_double(cells[3])]
+          for i, expected in [mu, mu_star, sigma] {
+            assert_true(expected.is_close(actual[i], relative_tolerance=1.0e-6, absolute_tolerance=1.0e-6))
+          }
+          matched = true
+        }
+      }
+      assert_true(matched)
+      compared += 1
+    }
+    println("\{name}: \{compared} factors agree with SALib for mu, mu_star and sigma")
+  }
+  println("Bootstrap intervals are intentionally not compared: percentile intervals differ from SALib's normal-approximation intervals.")
+}

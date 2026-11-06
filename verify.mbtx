@@ -1,0 +1,49 @@
+----
+import {
+  "moonbitlang/core/async",
+  "moonbitlang/core/async/shell",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/json",
+}
+----
+
+async fn command(args : Array[String]) -> String {
+  let output = @shell.Cmd("moon", ["run", "runner", "--", ..args]).output()
+  if output.exit_code() != 0 {
+    fail("CLI command failed: \{args[0]} (exit \{output.exit_code()})")
+  }
+  output.stdout()
+}
+
+async fn main {
+  let directory = ".local-check"
+  if !@fs.exists(directory) { @fs.mkdir(directory, recursive=true) }
+  let expected_counts = [160, 192, 160]
+  for i, name in ["heat", "stock", "spring"] {
+    let prefix = directory + "/" + name
+    @fs.write_text(prefix + ".study.json", command(["example", name]))
+    let plan = command(["plan", prefix + ".study.json"])
+    @fs.write_text(prefix + ".plan.json", plan)
+    @fs.write_text(prefix + ".inputs.csv", command(["inputs", prefix + ".plan.json"]))
+    let results = command(["evaluate", name, prefix + ".plan.json"])
+    @fs.write_text(prefix + ".results.csv", results)
+    let report = command(["analyze", prefix + ".plan.json", prefix + ".results.csv"])
+    @fs.write_text(prefix + ".report.json", report)
+    let value = @json.parse(report)
+    guard value is { "evaluations": Number(count, ..), "metrics": Array(metrics), .. } else {
+      fail("invalid report structure")
+    }
+    assert_eq(count, expected_counts[i].to_double())
+    assert_true(!metrics.is_empty())
+    @fs.write_text(prefix + ".html", command(["report", prefix + ".plan.json", prefix + ".results.csv"]))
+    assert_eq(command(["missing", prefix + ".plan.json", prefix + ".results.csv"]).trim().to_owned(), "[]")
+    assert_eq(command(["merge", prefix + ".plan.json", prefix + ".results.csv"]), results)
+    println("\{name}: \{expected_counts[i]} model evaluations, complete exchange and report verified")
+  }
+  let missing_file = @shell.Cmd("moon", ["run", "runner", "--", "plan", directory + "/absent.json"]).output()
+  assert_eq(missing_file.exit_code(), 74)
+  assert_true(!missing_file.stderr().contains(directory))
+  let bad_usage = @shell.Cmd("moon", ["run", "runner", "--", "not-a-command"]).output()
+  assert_eq(bad_usage.exit_code(), 64)
+  assert_true(!bad_usage.stderr().contains("Users"))
+}
