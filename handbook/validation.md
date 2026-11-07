@@ -40,6 +40,16 @@ moon -C consumer run . --deny-warn
 
 The final command for the oracle requires Python with SALib 1.5.2 installed. Scripts report that core async APIs are experimental in this toolchain. No warning suppression is used for numerical code.
 
-## Not yet established
+## Public GitHub snapshot
 
-Remote GitHub Actions execution, Mooncakes publication and a registry-installed consumer remain pending release authorization. A successful source consumer does not prove registry availability. Owner line-by-line review, a personally written contest application and a real user's external-model trial remain open. No measured throughput, optimality, statistical coverage guarantee or production deployment is claimed.
+GitHub Actions passed on commit [6cb2a1d](https://github.com/Lyhdsba/Vexstride/actions/runs/42386801910), including the three computation targets, CLI workflows, SALib comparison and separate consumer.
+
+## Local pre-submission follow-up
+
+Added regression coverage for a physical grid that collapses under floating-point rounding and for reversed-order result batches. The CLI now rejects an aggregate row or text budget overrun while loading batches. The end-to-end check verifies that an over-budget request fails before the next file is opened.
+
+The local changes passed formatting, strict check/build/test across Wasm, Wasm-GC and JavaScript (22 tests per target), the three CLI workflows, the 13-factor SALib comparison, the separate source consumer and local package creation. The public CI run above applies to its published commit.
+
+## Open verification items
+
+Mooncakes publication and a registry-installed consumer are pending. Owner review, a personally written contest application and a real user's external-model trial remain open. No measured throughput, optimality, statistical coverage guarantee or production deployment is claimed.

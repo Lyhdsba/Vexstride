@@ -37,7 +37,7 @@ Top share counts which factor has the greatest resampled μ*, splitting ties equ
 - 1..64 factors; 2..512 trajectories; even 4..32 levels.
 - At most 32768 model evaluations.
 - At most 8 million factor-trajectory bootstrap draws (`d*r*B`).
-- Finite, strictly increasing bounds with finite span; deterministic finite scalar outputs.
+- Finite, strictly increasing bounds with finite span and distinct representable physical grid levels. A range that is too narrow for the selected levels is rejected before planning. Model outputs must be deterministic finite scalars.
 - Positive reproducibility seeds; no implicit entropy source.
 
 These are protective input limits, not performance guarantees. Generation, validation and raw coordinate storage cost O(rd²); basic effect scanning also visits O(rd²) coordinates. Bootstrap costs O(Brd + dB log B), with O(rd+dB) additional analysis storage. JSON/CSV exchange adds storage proportional to serialized input. The library retains the complete plan to make external-model exchange inspectable.

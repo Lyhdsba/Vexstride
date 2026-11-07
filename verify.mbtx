@@ -55,6 +55,12 @@ async fn main {
   assert_eq(missing.exit_code(), 3)
   guard @json.parse(missing.stdout()) is Array(absent) else { fail("invalid missing output") }
   assert_eq(absent.length(), 1)
+  let last_result = lines[0].to_owned() + "\r\n" + lines[lines.length() - 2].to_owned() + "\r\n"
+  @fs.write_text(directory + "/last-result.csv", last_result)
+  assert_eq(command(["merge", directory + "/heat.plan.json", directory + "/last-result.csv", directory + "/partial.csv"]), csv)
+  let excess = @shell.Cmd("moon", ["run", "runner", "--", "merge", directory + "/heat.plan.json", directory + "/heat.results.csv", directory + "/last-result.csv", directory + "/absent.csv"]).output()
+  assert_eq(excess.exit_code(), 2)
+  assert_true(excess.stderr().contains("total result rows exceed plan size"))
   let incomplete = @shell.Cmd("moon", ["run", "runner", "--", "analyze", directory + "/heat.plan.json", directory + "/partial.csv"]).output()
   assert_eq(incomplete.exit_code(), 3)
   assert_eq(incomplete.stdout(), "")

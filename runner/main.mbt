@@ -64,8 +64,20 @@ async fn execute(args : Array[String]) -> Int32 {
       }
       let plan = @exchange.plan_from_json(read(path))
       let batches = []
+      let mut remaining_text = 16777216
+      let mut remaining_rows = plan.runs.length()
       for file in files {
-        batches.push(@exchange.parse_results(read(file)))
+        let input = read(file)
+        if input.length() > remaining_text {
+          raise @spec.Invalid("combined result files exceed 16 Mi UTF-16 units")
+        }
+        remaining_text -= input.length()
+        let batch = @exchange.parse_results(input)
+        if batch.length() > remaining_rows {
+          raise @spec.Invalid("total result rows exceed plan size")
+        }
+        remaining_rows -= batch.length()
+        batches.push(batch)
       }
       let merged = @trails.merge(plan, batches)
       if command == "merge" {

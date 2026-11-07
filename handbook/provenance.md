@@ -5,7 +5,7 @@ Vexstride implements published Morris screening ideas in MoonBit. It does not cl
 ## Algorithm references
 
 - Morris, M. D. (1991), *Factorial Sampling Plans for Preliminary Computational Experiments*, Technometrics 33(2), 161–174. [DOI](https://doi.org/10.1080/00401706.1991.10484804).
-- [SALib Morris documentation](https://salib.readthedocs.io/en/stable/api/SALib.analyze.html#module-SALib.analyze.morris): definitions, assumptions and reference behavior. SALib 1.5.2 is a test-only independent implementation. Its interval construction differs from this project's empirical percentile intervals.
+- [SALib Morris documentation](https://salib.readthedocs.io/en/stable/api/SALib.analyze.html#module-SALib.analyze.morris): definitions, assumptions and reference behavior. [SALib 1.5.2](https://pypi.org/project/SALib/1.5.2/) is MIT-licensed and invoked as an independent test tool. Its interval construction differs from this project's empirical percentile intervals.
 - Park-Miller recurrence with multiplier 48271: the implementation states the exact integer formula and rejection mapping, and tests a fixed output vector.
 - [moonbitlang/x](https://github.com/moonbitlang/x), version 0.5.5, Apache-2.0: SHA-256 and process exit support. MoonBit core supplies types, JSON, UTF-8, math and async file/process APIs.
 

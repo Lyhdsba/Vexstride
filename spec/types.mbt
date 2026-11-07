@@ -95,6 +95,18 @@ pub fn Study::validate(self : Study) -> Unit raise Problem {
       !(factor.upper - factor.lower).is_finite() {
       raise Invalid("factor bounds must define a positive finite span")
     }
+    let span = factor.upper - factor.lower
+    let divisor = (self.levels - 1).to_double()
+    let mut previous = factor.lower
+    for level in 1..<self.levels {
+      let physical = factor.lower + level.to_double() / divisor * span
+      if physical <= previous {
+        raise Invalid(
+          "factor \{factor.id} cannot represent distinct physical grid levels; widen the range or reduce levels",
+        )
+      }
+      previous = physical
+    }
   }
 }
 

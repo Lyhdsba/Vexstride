@@ -81,3 +81,19 @@ test "changed rows and mismatched identities cannot pass validation" {
     _ => fail("changed rows accepted")
   }
 }
+
+///|
+test "reject a physical range that collapses distinct grid levels" {
+  let config = study()
+  let narrow : @spec.Factor = {
+    ..config.factors[0],
+    lower: 9007199254740992.0,
+    upper: 9007199254740994.0,
+  }
+  try @trails.generate({ ..config, factors: [narrow], }) catch {
+    @spec.Invalid(message) =>
+      assert_true(message.contains("distinct physical grid levels"))
+  } noraise {
+    _ => fail("four levels accepted in a one-ULP span")
+  }
+}

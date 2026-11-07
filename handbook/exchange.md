@@ -10,7 +10,7 @@ The model-input CSV header is `plan_id,run_id,<factor IDs in order>`. Numerical 
 
 ## Results
 
-The exact CSV header is `plan_id,run_id,value`. Each result must match a known run and full plan fingerprint. Results may arrive in any order and in up to 128 CLI batch files. A duplicate is rejected even when the repeated value is identical. Merging returns rows in plan order; it never performs last-write-wins updates.
+The exact CSV header is `plan_id,run_id,value`. Each result must match a known run and full plan fingerprint. Results may arrive in any order and in up to 128 CLI batch files. Together, the files may contain at most as many result rows as the plan has runs, and at most 16 Mi UTF-16 units of decoded text. The CLI checks both limits as it reads each batch. A duplicate is rejected even when the repeated value is identical. Merging returns rows in plan order.
 
 Missing results are listed explicitly. Analysis requires all rows; no interpolation, zero filling or incomplete-trajectory deletion is performed. A failed external model run should remain missing until it is repaired and rerun. Output must be a finite scalar; NaN and infinities are rejected.
 
