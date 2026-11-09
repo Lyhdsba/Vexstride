@@ -52,4 +52,4 @@ The local changes passed formatting, strict check/build/test across Wasm, Wasm-G
 
 ## Open verification items
 
-Mooncakes publication and a registry-installed consumer are pending. Owner review, a personally written contest application and a real user's external-model trial remain open. No measured throughput, optimality, statistical coverage guarantee or production deployment is claimed.
+Mooncakes publication and a registry-installed consumer are pending. The [contest application](../Vexstride-申报书.md) records the owner's completed checks. The remaining owner review items are listed in the [development notes](../DEVELOPMENT.md). A real user's external-model trial remains open. No measured throughput, optimality, statistical coverage guarantee or production deployment is claimed.

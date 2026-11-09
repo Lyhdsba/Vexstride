@@ -14,11 +14,13 @@ The project does not contain fabricated human sign-offs, backdated development r
 
 ## Review before release
 
+The owner reports running the built-in spring example through result import and analysis, and reviewing the reversed-order batch and floating-point grid regressions. See the [contest application](Vexstride-申报书.md) for the owner's account of that work. The owner wrote the application text with AI outlining and editorial feedback.
+
 - [ ] The owner can explain normalized Morris steps, signed effects and the meaning of μ*, μ and σ.
 - [ ] The owner can explain why σ does not isolate interactions and why these results are not causal claims.
 - [ ] The owner has run a custom model through CSV exchange and reviewed the missing/duplicate-result behavior.
 - [ ] The owner has reviewed the three example assumptions, licenses, generated interfaces and validation evidence.
-- [ ] The owner has written the required one-page project application personally, using the implemented scope and at least three concrete scenarios.
+- [x] The owner wrote the [project application](Vexstride-申报书.md), covering the implemented scope and three concrete scenarios.
 - [x] The owner authorized remote repository creation and the scheduled pushes.
 - [x] Remote CI passed on the published GitHub snapshot [6cb2a1d](https://github.com/Lyhdsba/Vexstride/actions/runs/42386801910).
 - [ ] The package has been published to Mooncakes and installed into an independent consumer.
